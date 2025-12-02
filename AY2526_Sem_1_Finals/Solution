@@ -1,1 +1,56 @@
+# This is my attempt, might not be correct
 
+#q2
+x = c(22, 27, 12, 19, 22, 25, 28, 16, 13, 24)
+ave = function(numvec){
+    return(sum(numvec) / length(numvec))
+}
+ave(x)
+
+med = function(numvec){
+    numvec = sort(numvec)
+    n = length(numnvec)
+    return(ifelse(n%%2 == 1, numvec[(n+1)/2], (numvec[n/2] + numvec[(n+1)/2])/2))
+}
+med(x)
+
+#q3
+setwd("C:/Users/yaote/DSA1101/DSA_Finals")
+library("rpart")
+library("rpart.plot")
+library("class")
+library("base")
+library("ROCR")
+library("e1071")
+library('arules')
+library('arulesViz')
+
+data = read.csv("cardio.csv")
+
+#LM
+LM = glm(cardio ~ ., data = data, family = binomial)
+coef(summary(LM))
+
+person = data.frame(
+    age = 20000, gender = 2, height = 170, weight = 65, ap_hi = 120, ap_lo = 90,
+    cholesterol = 1, gluc = 1, smoke = 0, alco = 0, active = 0
+)
+
+p_LM_person = predict(LM, person, type = "response")
+
+#DT
+DT = rpart(cardio ~ ., data = data, method = "class", parms = list(split = "information"),
+           control = rpart.control(cp = 0.005))
+rpart.plot(DT)
+
+#NB
+NB = naiveBayes(cardio ~ ., data = data)
+
+predict(NB, new, "raw")
+pred.nb.prob = as.vector(predict(NB, temp, "raw")[,2])
+pred_nb = prediction(pred.nb.prob, data$cardio)
+roc_nb = performance(pred_nb, measure="tpr", x.measure="fpr")
+plot(roc_nb, col = "blue")
+auc1 = performance(pred_nb , "auc")@y.values[[1]]
+nb_pred_probs = predict(nb_model, nb_data, type = "raw")[, 2]
+nb_pred_obj = prediction(nb_pred_probs, nb_data$diabetes)
